@@ -18,9 +18,9 @@ class PDFSQLlista:
             for message in messages:
                 receipt_handle = message["ReceiptHandle"]
                 json_body = json.loads(message["Body"])
-                objetct_key = json_body["Records"][0]["s3"]["object"]["key"]
-                objetct_key_unquote = urllib.parse.unquote(objetct_key)
-                objetct_key_final = re.sub(r"\+(?=\()", " ", objetct_key_unquote)
+                object_key = json_body["Records"][0]["s3"]["object"]["key"]
+                object_key_unquote = urllib.parse.unquote(object_key)
+                object_key_final = re.sub(r"\+(?=\()", " ", object_key_unquote)
 
                 try:
                     print("Processar PDF")
