@@ -11,15 +11,18 @@ logging.basicConfig(level=logging.INFO)
 class PDFTextExtract:
     def __init__(self, pdf_file_path):
         self.pdf_file_path = pdf_file_path
-        self.extracted_tex = ""
+        self.extracted_text = ""
         self.aws = AWSS3()
-
+        
     def start(self):
         
         try:
             self.download_file()
-            self.extract_text()
-        
+            t = self.extract_text()
+            r= self.extract_operation(t)
+            split = self.split_text_by_newline(r)
+            df = self.convert_to_daframe(split)
+            print(df)
         except Exception as e:
             print("Erro")
 
@@ -40,7 +43,30 @@ class PDFTextExtract:
                 extracted_text += page.extract_text()
             
         return extracted_text
+    
+    def extract_operation(self,text):
+        padrao = r"(C/V.*?)(?=\nPosição Ajuste)"
+        result = re.search(padrao, text, re.DOTALL)
 
+        if result:
+            return result.group(1)
+        else:
+            print("Não foi encontrado")
+
+    def split_text_by_newline(self, text):
+        if text:
+            return text.split("\n")
+        else:
+            return []
+    
+    def convert_to_daframe(self, vetor):
+        header = vetor[0].split()
+        dados = (
+            linha.split() for linha in vetor[1:] if linha
+        )
+        df = pd.DataFrame(dados, columns=header)
+
+        return df
 
 if __name__ == "__main__":
     PDFTextExtract("corretora_jornada_de_dados (1).pdf").start()
