@@ -24,8 +24,10 @@ O fluxo principal do projeto é o seguinte:
    - O DataFrame gerado a partir do PDF é enviado para a tabela `corretora_pdf` no banco PostgreSQL.  
    - A classe `RDSPostgresSQLManager` gerencia a conexão com o banco, permitindo operações com psycopg2 ou SQLAlchemy.
 
-5. **Integração entre os scripts**:  
-   - `PDFSQLlista` recebe a mensagem da fila SQS → identifica o arquivo PDF no S3 → chama `PDFTextExtract` para processar e enviar os dados para o banco.
+5. **Serviço banco Postgres:**
+
+**Supabase**
+   
 
 
 
