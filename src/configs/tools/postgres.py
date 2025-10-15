@@ -76,7 +76,8 @@ class RDSPostgresSQLManager:
 
     def alchemy(self):
         self.engine = create_engine(
-            f"postgresql://{self.user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+            f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
         )
 
         return self.engine
+    

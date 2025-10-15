@@ -3,7 +3,7 @@ import os
 import re
 import pandas as pd
 import PyPDF2
-
+from src.configs.tools.postgres import RDSPostgresSQLManager
 from src.configs.tools.aws.s3 import AWSS3 
 
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +22,8 @@ class PDFTextExtract:
             r= self.extract_operation(t)
             split = self.split_text_by_newline(r)
             df = self.convert_to_daframe(split)
-            print(df)
+            insert = self.send_to_db(df, "corretora_pdf")
+            print(insert)
         except Exception as e:
             print("Erro")
 
@@ -67,6 +68,16 @@ class PDFTextExtract:
         df = pd.DataFrame(dados, columns=header)
 
         return df
+    
+    def send_to_db(self, df, table_name):
+        try:
+            connection = RDSPostgresSQLManager().alchemy()
+            df.to_sql(table_name, connection, if_exists="append", index=False)
+            logging.info(f"Insert na {table_name} realizado no banco com sucesso!")
+            os.remove(f"download/{self.pdf_file_path}")
+        except Exception as e:
+            raise print({e})
 
+        
 if __name__ == "__main__":
-    PDFTextExtract("corretora_jornada_de_dados (1).pdf").start()
+    PDFTextExtract("corretora_jornada_de_dados (2).pdf").start()
