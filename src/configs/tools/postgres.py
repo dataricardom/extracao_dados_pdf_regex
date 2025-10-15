@@ -34,13 +34,14 @@ class RDSPostgresSQLManager:
                 dbname = self.db_name,
                 user=self.db_user,
                 password=self.db_password,
-                host=self.db_host
+                host=self.db_host,
                 port=self.db_port
             )
             print("Conexão bem sucedida com banco POSTGRES!")
             return connection
         except psycopg2.Error as e:
             print(f"Erro ao conectar ao banco POSTGRES: {e}")
+            return None
 
     def execute_query(self, query):
         try:
